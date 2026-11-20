@@ -1,0 +1,255 @@
+{
+ "source_step": "referans 4 inç montaj",
+ "units": "mm",
+ "frame_note": "Z yukarı, orijin alt plaka üst yüzeyi merkezi; X/Y yönü alt plakanın kendi yerel çerçevesi (STEP'te alt plaka dünyada -105.435° döndürülmüş, geri çevrildi). Bacak i: base_joints_mm[i] <-> top_joints_mm[i] (aynı silindir ekseni).",
+ "base_joints_mm": [
+  [
+   64.705,
+   241.481,
+   68.0
+  ],
+  [
+   -64.705,
+   241.481,
+   68.0
+  ],
+  [
+   -241.481,
+   -64.705,
+   68.0
+  ],
+  [
+   -176.777,
+   -176.777,
+   68.0
+  ],
+  [
+   176.777,
+   -176.777,
+   68.0
+  ],
+  [
+   241.481,
+   -64.705,
+   68.0
+  ]
+ ],
+ "top_joints_mm": [
+  [
+   129.024,
+   118.228,
+   518.014
+  ],
+  [
+   -129.024,
+   118.228,
+   518.014
+  ],
+  [
+   -166.9,
+   52.624,
+   518.014
+  ],
+  [
+   -37.877,
+   -170.852,
+   518.014
+  ],
+  [
+   37.877,
+   -170.852,
+   518.014
+  ],
+  [
+   166.9,
+   52.624,
+   518.014
+  ]
+ ],
+ "R_base_mm": 250.0,
+ "R_top_mm": 175.0,
+ "base_pair_separation_deg": 30.0,
+ "top_pair_separation_deg": 25.0,
+ "top_rotation_offset_deg": 60.0,
+ "home_height_mm": 450.014,
+ "home_leg_length_mm": 471.0,
+ "actuator_in_assembly": "IMTL40.200.12.10.GM202540",
+ "joint_part": "mario ferri 1G mafsal",
+ "joint_offset_note": "Kardan merkezi (çarpı merkezi) ile silindir montaj yüzü arası, silindir ekseni boyunca. Arka: pivot -> arka montaj flanşı arka yüzü (IMTL-40-KK). Ön: pivot -> rod ucu (IMTL-40-RM) uç yüzü.",
+ "joint_offset_rear_mm": 39.0,
+ "joint_offset_front_mm": 16.0,
+ "plates": {
+  "base_outer_diameter_mm": 650.0,
+  "top_outer_diameter_mm": 479.677,
+  "thickness_mm": 10.0,
+  "base_thickness_mm": 10.0,
+  "top_thickness_mm": 10.0,
+  "base_z_range_mm": [
+   -10.0,
+   0.0
+  ],
+  "top_z_range_mm": [
+   586.014,
+   596.014
+  ],
+  "note": "Alt plaka: R=325 daire, iki yanı düz kesik (yerel Y yönü +-310). Üst plaka: yuvarlatılmış köşeli çokgen, dış çap köşelerin çevrel çemberi."
+ },
+ "actuator_geometry": {
+  "nominal_stroke_mm": 200,
+  "pivot_to_pivot_mm": 471.0,
+  "pivot_rear_to_barrel_origin_mm": 81.0,
+  "barrel_length_mm": 324.0,
+  "rod_end_beyond_barrel_front_mm": 50.0,
+  "rear_flange_face_to_rod_end_mm": 416.0,
+  "note": "Rod'un iç kısmı STEP'te modellenmemiş; strok konumu (kapalı/açık) bu dosyadan kesin okunamaz. Katalog kapalı boyuyla (arka yüz -> rod ucu) karşılaştırılmalı."
+ },
+ "base_angles_deg": [
+  75.0,
+  105.0,
+  195.0,
+  225.0,
+  315.0,
+  345.0
+ ],
+ "top_angles_deg": [
+  42.5,
+  137.5,
+  162.5,
+  257.5,
+  282.5,
+  17.5
+ ],
+ "base_pair_centers_deg": [
+  90.0,
+  210.0,
+  330.0
+ ],
+ "top_pair_centers_deg": [
+  30.0,
+  150.0,
+  270.0
+ ],
+ "legs": [
+  {
+   "leg": 1,
+   "base_joint": [
+    64.705,
+    241.481,
+    68.0
+   ],
+   "top_joint": [
+    129.024,
+    118.228,
+    518.014
+   ],
+   "length_mm": 471.0,
+   "base_pivot_to_actuator_axis_mm": 0.0,
+   "top_pivot_to_actuator_axis_mm": 0.0
+  },
+  {
+   "leg": 2,
+   "base_joint": [
+    -64.705,
+    241.481,
+    68.0
+   ],
+   "top_joint": [
+    -129.024,
+    118.228,
+    518.014
+   ],
+   "length_mm": 471.0,
+   "base_pivot_to_actuator_axis_mm": 0.0,
+   "top_pivot_to_actuator_axis_mm": 0.0
+  },
+  {
+   "leg": 3,
+   "base_joint": [
+    -241.481,
+    -64.705,
+    68.0
+   ],
+   "top_joint": [
+    -166.9,
+    52.624,
+    518.014
+   ],
+   "length_mm": 471.0,
+   "base_pivot_to_actuator_axis_mm": 0.0,
+   "top_pivot_to_actuator_axis_mm": 0.0
+  },
+  {
+   "leg": 4,
+   "base_joint": [
+    -176.777,
+    -176.777,
+    68.0
+   ],
+   "top_joint": [
+    -37.877,
+    -170.852,
+    518.014
+   ],
+   "length_mm": 471.0,
+   "base_pivot_to_actuator_axis_mm": 0.0,
+   "top_pivot_to_actuator_axis_mm": 0.0
+  },
+  {
+   "leg": 5,
+   "base_joint": [
+    176.777,
+    -176.777,
+    68.0
+   ],
+   "top_joint": [
+    37.877,
+    -170.852,
+    518.014
+   ],
+   "length_mm": 471.0,
+   "base_pivot_to_actuator_axis_mm": 0.0,
+   "top_pivot_to_actuator_axis_mm": 0.0
+  },
+  {
+   "leg": 6,
+   "base_joint": [
+    241.481,
+    -64.705,
+    68.0
+   ],
+   "top_joint": [
+    166.9,
+    52.624,
+    518.014
+   ],
+   "length_mm": 471.0,
+   "base_pivot_to_actuator_axis_mm": 0.0,
+   "top_pivot_to_actuator_axis_mm": 0.0
+  }
+ ],
+ "pivot_method": "1G istavroz parçasının silindirik yüzlerinin (CYLINDRICAL_SURFACE) eksen doğrularının kesişimi (en küçük kareler); yerel merkez [0.0, -0.0, 8.5], montaj ağacı dönüşümleriyle dünyaya taşındı.",
+ "checks": {
+  "coplanar": true,
+  "equal_radius": true,
+  "symmetric_120": true,
+  "equal_leg_length": true,
+  "pivot_on_actuator_axis": true,
+  "tolerance_mm_deg": 0.5,
+  "base_z_std_mm": 0.0,
+  "top_z_std_mm": 1e-06,
+  "base_radius_spread_mm": 0.0,
+  "top_radius_spread_mm": 0.0,
+  "symmetry_120_max_dev_mm": 0.0,
+  "pair_separation_spread_deg": 0.0,
+  "leg_length_spread_mm": 1e-06,
+  "pivot_to_actuator_axis_max_mm": 0.0,
+  "top_vs_base_pivot_centre_xy_mm": 0.0,
+  "base_pivot_centre_vs_plate_centre_xy_mm": 0.0,
+  "top_pivot_centre_vs_plate_centre_xy_mm": 0.0,
+  "top_rotation_offset_each_pair_deg": [
+   60.0,
+   60.0,
+   60.0
+  ]
+ }
+}

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acrome Stewart PRO Konfigüratör</title>
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+<script>if (window.APP_CONFIG && window.APP_CONFIG.static) document.write('<script src="api-static.js"><\/script>');</script>
+</head>
+<body>
+<header>
+  <div class="brand">ACROME <span>Stewart PRO Konfigüratör</span></div>
+  <nav>
+    <button data-tab="cfg" class="active">Konfigüratör</button>
+    <button data-tab="orders">Siparişler</button>
+    <button data-tab="catalog">Katalog</button>
+  </nav>
+</header>
+<div id="mockbar" class="mockbar" hidden>Hesap motoru bağlı değil — örnek veri</div>
+<div id="enginebar" class="mockbar" hidden>Hesap motoru yükleniyor (ilk açılışta ~15 sn)…</div>
+<main>
+  <section id="tab-cfg">
+    <p class="intro">İsterleri girin → Hesapla → önerilen silindir, servo motor + sürücü ve plaka ölçüleri.</p>
+    <form id="reqform" class="card">
+      <div class="step">
+        <h2><span class="n">1</span>Yük ve hız</h2>
+        <div class="small">Her satır bir çalışma rejimi; seçilen silindir, hatve ve motor tüm rejimleri birlikte karşılar. İvme boş bırakılırsa hesaba katılmaz.</div>
+        <div class="tablewrap"><table id="casetable"></table></div>
+        <div class="row-actions"><button type="button" id="addcase">+ Rejim ekle</button></div>
+        <div class="grid" style="margin-top:10px">
+          <label title="Yükün ağırlık merkezinin üst plaka üst yüzeyinden yüksekliği">Yük ağırlık merkezi yüksekliği (mm)<small>üst plaka üstünden, momenti belirler</small><input name="cog_height_mm" type="number" step="any" value="100"></label>
+        </div>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">2</span>Çalışma uzayı</h2>
+        <div class="small">Platformun home konumundan her yöne ulaşması gereken en büyük sapma (±).</div>
+        <div class="grid">
+          <label title="X ekseninde home'dan ± hareket">X ± (mm)<input name="x_mm" type="number" step="any" value="0"></label>
+          <label title="Y ekseninde home'dan ± hareket">Y ± (mm)<input name="y_mm" type="number" step="any" value="0"></label>
+          <label title="Z (yükseklik) ekseninde home'dan ± hareket">Z ± (mm)<input name="z_mm" type="number" step="any" value="100"></label>
+          <label title="X ekseni etrafında dönme">Roll ± (°)<input name="roll_deg" type="number" step="any" value="15"></label>
+          <label title="Y ekseni etrafında dönme">Pitch ± (°)<input name="pitch_deg" type="number" step="any" value="15"></label>
+          <label title="Z ekseni etrafında dönme">Yaw ± (°)<input name="yaw_deg" type="number" step="any" value="0"></label>
+        </div>
+        <label class="check" title="İşaretli değilse her eksen kendi sınırında, diğerleri home'dayken ayrı ayrı denenir"><input type="checkbox" name="simultaneous"> Eksenler aynı anda
+          <small>Kapalıysa her eksen ayrı ayrı değerlendirilir; açıksa tüm eksenler aynı anda uç değerde olabilir (çok daha zorlayıcı).</small></label>
+      </div>
+
+      <div class="step">
+        <h2><span class="n">3</span>Sınırlar</h2>
+        <div class="grid">
+          <label title="Boş bırakılırsa plaka boyutu serbest">Max alt plaka çapı (mm)<small>boş = sınır yok</small><input name="base_max_diameter_mm" type="number" step="any"></label>
+          <label title="Boş bırakılırsa plaka boyutu serbest">Max üst plaka çapı (mm)<small>boş = sınır yok</small><input name="top_max_diameter_mm" type="number" step="any"></label>
+          <label title="Servo sürücü besleme gerilimi sınıfı">Besleme gerilimi<small>otomatik = en uygun seçilir</small><select name="supply_voltage_V"><option value="">Otomatik</option><option value="220">220 V</option><option value="380">380 V</option></select></label>
+        </div>
+      </div>
+
+      <details class="box" id="advanced"><summary><b>Gelişmiş</b> <span class="small">varsayılanlar yanlarında</span></summary>
+        <div class="grid" style="margin-top:8px">
+          <label>Emniyet katsayısı <small>varsayılan 1,5</small><input name="safety_factor" type="number" step="any" value="1.5"></label>
+          <label>Min. pay (%) <small>varsayılan 10</small><input name="min_margin_pct" type="number" step="any" value="10"></label>
+          <label>Strok payı (%) <small>varsayılan 0</small><input name="stroke_margin_pct" type="number" step="any" value="0"></label>
+          <label>Uç payı (mm) <small>varsayılan 2</small><input name="end_margin_mm" type="number" step="any" value="2"></label>
+          <label>Plaka tercihi <small>varsayılan: referansa yakın</small><select name="plate_preference"><option value="reference">Referansa yakın (Ø650/Ø480 tarzı)</option><option value="smallest">En küçük plaka</option></select></label>
+        </div>
+        <div class="small">Strok payı: hesaplanan strokun üstüne istenen pay; uç payı: silindirin iki ucunda bırakılan mekanik boşluk.</div>
+      </details>
+      <div class="row-actions"><button class="primary" type="submit" id="sizebtn">Hesapla</button><span id="sizemsg" class="msg"></span></div>
+    </form>
+
+    <div id="results" hidden>
+      <div id="viewcard" class="card" hidden>
+        <h2 id="rectitle">Önerilen konfigürasyon</h2>
+        <div id="recbox"></div>
+        <div id="margins"></div>
+        <div class="viewrow">
+          <div id="view3d"></div>
+          <div class="side">
+            <h3>Poz önizleme</h3>
+            <div id="sliders"></div>
+            <button type="button" id="resetpose">Home'a dön</button>
+            <div id="legstat" class="small"></div>
+            <button class="primary" type="button" id="toorder">Siparişe dönüştür</button>
+            <div id="orderform" class="box" hidden>
+              <label>Müşteri adı (boş bırakılabilir)<input id="ocust"></label>
+              <div class="row-actions"><button class="primary" type="button" id="ocreate">Oluştur</button><button type="button" id="ocancel">Vazgeç</button></div>
+            </div>
+          </div>
+        </div>
+        <div id="cases"></div>
+        <div id="cnotes"></div>
+      </div>
+
+      <div class="card">
+        <h2>Alternatifler</h2>
+        <div class="tablewrap"><table id="candtable"></table></div>
+      </div>
+      <div id="notes"></div>
+    </div>
+
+    <details id="refcap" class="card" hidden>
+      <summary><b>Referans platform kapasitesi</b> <span id="refcaptitle" class="small"></span></summary>
+      <div id="refcapbody"></div>
+    </details>
+  </section>
+
+  <section id="tab-orders" hidden>
+    <div id="staticwarn" class="mockbar" hidden>Siparişler yalnız bu tarayıcıda saklanır; düzenli dışa aktarın.</div>
+    <div id="orderlist">
+      <div class="card">
+        <div class="toolbar">
+          <input id="oq" placeholder="Ara: sipariş no, müşteri, not">
+          <select id="ostatus"><option value="">Tüm durumlar</option></select>
+        </div>
+        <div id="iobar" class="row-actions" hidden style="margin:0 0 10px">
+          <button type="button" id="oexport">Dışa aktar (JSON)</button>
+          <button type="button" id="oimport">İçe aktar</button>
+          <input type="file" id="ofile" accept=".json,application/json" hidden>
+          <span id="iomsg" class="small"></span>
+        </div>
+        <div class="tablewrap"><table id="ordertable"></table></div>
+      </div>
+    </div>
+    <div id="orderdetail" hidden></div>
+  </section>
+
+  <section id="tab-catalog" hidden>
+    <div id="catalogbox"></div>
+  </section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

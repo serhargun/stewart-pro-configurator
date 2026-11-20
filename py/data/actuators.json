@@ -1,0 +1,1434 @@
+{
+ "source": "https://elektriklisilindir.com/ (Hidro-Tek, marka iMotion); ikincil: https://www.imotion.com.tr/en/",
+ "retrieved": "2026-11-20",
+ "ordering_code_key": "ÇÖZÜM DURUMU: Tedarikçi sitesinde (elektriklisilindir.com ürün sayfaları, Destek, Teknik Döküman, ürün-oluştur formu; imotion.com.tr) SİPARİŞ KODU ANAHTARI/LEJANDI YAYIMLANMAMIŞ. Aşağıdaki çözüm tedarikçinin kendi dosya/örnek adlarından çıkarımdır; DOĞRULANDI = tedarikçi verisiyle birebir uyuşan, TAHMİN = teyit gerekli.\nGENEL: IMT<boyut>[.<strok>]... ; boyut 032/040/050/063/080/100/125 = silindir gövde ölçüsü (ISO 15552).\nDOĞRULANDI (datasheet dosya adı IMT040_1205 -> 'IMT40 SERIES', Ball Screw 12 x 5 mm): dosya adındaki son 4 hane = bilyalı vida çapı (2 hane) + hatve (2 hane): 1202=12x2, 1205=12x5, 1210=12x10, 1212=12.7x12.7, 1404=14x4, 1605=16x5, 2010=20x10, 3205=32x5, 4010=40x10, 5020=50x20.\nDOĞRULANDI (IMTL.40.200.12.5.L = tedarikçinin STEP dosyası; IMTL40 sayfası: strok 600 max, vida 12x5): IMTL.<boyut>.<strok mm>.<vida çapı>.<hatve mm>.<L|G>. Yani IMTL40.200.12.10.GM202540 içinde 40=boyut, 200=strok (mm; stroklar 50,100,...500 örnek listesiyle uyumlu), 12=vida çapı, 10=hatve (12x10; imotion IMTK40 sayfasında 12x5 ve 12x10 seçenekleri var).\nDOĞRULANDI (IMTL63 sayfası iki sütun Inline/Paralel; dosyalar .L ve .G): .L = Inline (motor eksende), .G = Paralel (motor yanda). IMT serisi örnek adlarında .P = paralel, .L/.IL = inline (IMT050.0250.L..., IMT050.0250.P..., IMT050.0425.IL...). Strok 4 hane: IMT125.0500.4010.L = boyut 125, strok 500, vida 40x10, Inline.\nTAHMİN, TEYİT GEREKLİ: 'GM202540' ekinde G = paralel (.G) olabilir, 'M202540' motor/adaptör/flanş kodu olabilir (örnek STEP adı IMT040_120_010_1405_G+PD4-C60018L4204-E-01 yapısında G'den sonra '+<motor kodu>' geliyor). 'M202540' (20/25/40?) anlamı HİÇBİR kaynakta bulunamadı.\nBULUNAMADI: alt parça kodları IMTL-40-KK (60), -KKK (60), -KKM (60), -RM, -BR, -ÜK ve '(60)' eki. Tedarikçi 'Montaj Ekipmanları' resminde 1-20 numaralı ISO 15552 montaj parçalarını (flanşlar, ayaklar, mafsal başlıkları, çatal, rotil, kilit somunu) numaralı gösteriyor ama parça kodu vermiyor. Anlamlar uydurulmadı; üreticiye sorulmalı (info@hidro-tek.com.tr, +90 212 671 91 62).\nIMTL vs IMT: IMTL (imotion'da IMTK, kompakt/maliyet serisi) ayrı seri: yalnız boyut 40 ve 63, hatve 5/10, inline+paralel, tek ölçü tablosu (A..L[,M]); IMT ise 32-125, çoklu hatve, motor adaptörü motora özel X/Y/Z.\n",
+ "speed_and_force_notes": [
+  "Katalog hızları 3000 d/d motor devrinde verilir (XH/XH-T: 2000 d/d); doğrulandı: hız = hatve x d/d / 60 (örn. 12.7 x 3000/60 = 635 mm/s).",
+  "max_input_rpm: datasheet 'Max. rotational speed 3500 RPM' (tüm datasheetler).",
+  "max_force_N: türetilmiş = min(nominal_force_N, dynamic_load_N); nominal kuvvet gövde sınırıdır. Ömür için dinamik yük kapasitesi hesabı ayrıca gerekir.",
+  "Datasheetler IMT32/40/50 için Static/Dynamic etiketlerini ters yazıyor (dinamik<statik olmalı); web tabloları kullanıldı."
+ ],
+ "default_limits_all_models": {
+  "max_input_rpm": 3500,
+  "repeatability_mm": 0.03,
+  "protection": "IP54 (IP65 opsiyonel)",
+  "duty_cycle_pct": 100,
+  "temperature_C": [
+   -10,
+   80
+  ],
+  "source": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1205.pdf"
+ },
+ "rod_end_joint": {
+  "reference_part": "mario ferri 1G mafsal",
+  "interpretation": "Mario Ferri 'Single joints serie G' (DIN 808) tek kardan mafsalı, model 1G (kod SG0S 1600). TEYİT GEREKLİ: 'mario ferri 1G' ifadesinin bu seri olduğu varsayıldı.",
+  "max_working_angle_deg": 45,
+  "max_speed_rpm": 1000,
+  "1G_dimensions_mm": {
+   "d_H7": 16,
+   "D": 32,
+   "L2": 68,
+   "L1": 34,
+   "C": 16,
+   "weight_kg": 0.3
+  },
+  "source": "Mario Ferri 'Universal Joints' kataloğu s.3 (çalışma açısı 45° tek mafsal / 90° çift; G serisi max 1000 d/d) ve s.4 (1G satırı): https://archimedes.pl/wp-content/uploads/2020/04/catalogo_completo-1.pdf (PDF s.5-6)",
+  "note": "Katalog sınırı 45°; pratik güvenli açı daha düşük olabilir (teyit).",
+  "cylinder_side_rod_end_note": "Silindir rod ucu ISO 15552 dişli (IMT40: M12x1.25, IMT63: M16x1.5, IMTL40: M12x1.25, IMTL63: M16x1.5); pnömatik silindir bağlantı elemanları (çatal/rotil/mafsal) kullanılabilir. Tedarikçi mafsal tipi/max açı vermiyor."
+ },
+ "models": [
+  {
+   "model": "IMT32",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt32-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-032/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 2,
+     "screw_dia_x_lead": "12x2",
+     "max_speed_mm_s": 100,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 500,
+     "dynamic_load_N": 2000,
+     "static_load_N": 4000,
+     "max_force_N": 500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt32-elektrikli-silindir/ (Teknik Veriler)",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 2900,
+      "static_load_N": 4700,
+      "nominal_force_N": 500,
+      "max_speed_mm_s": 100,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "12x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 500,
+     "dynamic_load_N": 5000,
+     "static_load_N": 8600,
+     "max_force_N": 500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt32-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT032_1205.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT032_1205.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 4200,
+      "static_load_N": 5400,
+      "nominal_force_N": 500,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "Datasheet 'Static 5 KN / Dynamic 8,6 KN' yazıyor (etiketler ters görünüyor); web tablosu dyn 5000 / stat 8600"
+    },
+    {
+     "lead_mm": 12.7,
+     "screw_dia_x_lead": "12x12.7",
+     "max_speed_mm_s": 635,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 500,
+     "dynamic_load_N": 8000,
+     "static_load_N": 15500,
+     "max_force_N": 500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt32-elektrikli-silindir/",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 6600,
+      "static_load_N": 8900,
+      "nominal_force_N": 500,
+      "max_speed_mm_s": 635,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 600,
+   "max_acceleration_m_s2": 12,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": 120,
+    "per_stroke": 1.0,
+    "note": "L_min(gövde) = B + (A + strok) + C [ön baş + tüp + arka baş], rod ucu çıkıntısı ve motor/adaptör HARİÇ. Çizimden yorumlandı (A+* = tüp uzunluğu, B/C = baş blokları; imotion.com.tr: 'A + stroke determines the cylinder body length'), teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt32-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT032_1205.pdf"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": 70,
+    "B": 25,
+    "C": 25,
+    "D_dia": 29.5,
+    "E_dia": 20,
+    "F_thread": "M10x1.25",
+    "G": 22,
+    "I": 18,
+    "H": 9,
+    "M": 45,
+    "N": 32.5,
+    "O_thread": "M6",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT40",
+   "series": "IMT",
+   "used_before": true,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt40-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-040/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 2,
+     "screw_dia_x_lead": "12x2",
+     "max_speed_mm_s": 100,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 1000,
+     "dynamic_load_N": 2000,
+     "static_load_N": 4000,
+     "max_force_N": 1000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt40-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1202.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1202.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 2900,
+      "static_load_N": 4700,
+      "nominal_force_N": 1500,
+      "max_speed_mm_s": 100,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 4,
+     "screw_dia_x_lead": "14x4",
+     "max_speed_mm_s": 200,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 1000,
+     "dynamic_load_N": 5000,
+     "static_load_N": 8800,
+     "max_force_N": 1000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt40-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1404.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1404.pdf",
+     "note": "imotion.com.tr sayfasında 14x4 yok"
+    },
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "12x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 1000,
+     "dynamic_load_N": 5000,
+     "static_load_N": 8600,
+     "max_force_N": 1000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1205.pdf (hız 250 mm/s, nominal 1000 N); dyn/stat için IMTL40 12x5 sayfası https://elektriklisilindir.com/imtl40-elektrikli-silindir/",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1205.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 4200,
+      "static_load_N": 5400,
+      "nominal_force_N": 1500,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "Web tablosunda 12x5 sütunu YOK, yalnız datasheet var. Datasheet 'Static 5 KN/Dynamic 8,6 KN' etiketi ters; dyn 5000/stat 8600 değerleri IMTL40 (12x5) sayfasından. Teyit gerekli."
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "12x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 1000,
+     "dynamic_load_N": 4400,
+     "static_load_N": 7700,
+     "max_force_N": 1000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt40-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1210.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1210.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 4400,
+      "static_load_N": 7700,
+      "nominal_force_N": 1500,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 12.7,
+     "screw_dia_x_lead": "12.7x12.7",
+     "max_speed_mm_s": 635,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 1000,
+     "dynamic_load_N": 8000,
+     "static_load_N": 15500,
+     "max_force_N": 1000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt40-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1212.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1212.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 6600,
+      "static_load_N": 8900,
+      "nominal_force_N": 1500,
+      "max_speed_mm_s": 635,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 800,
+   "max_acceleration_m_s2": 12,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": 129.0,
+    "per_stroke": 1.0,
+    "note": "L_min(gövde) = B + (A + strok) + C [ön baş + tüp + arka baş], rod ucu çıkıntısı ve motor/adaptör HARİÇ. Çizimden yorumlandı (A+* = tüp uzunluğu, B/C = baş blokları; imotion.com.tr: 'A + stroke determines the cylinder body length'), teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt40-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT040_1205.pdf"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": 70,
+    "B": 29.5,
+    "C": 29.5,
+    "D_dia": 35,
+    "E_dia": 25,
+    "F_thread": "M12x1.25",
+    "G": 24,
+    "I": 21.5,
+    "H": 9.5,
+    "M": 55,
+    "N": 38,
+    "O_thread": "M6",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)",
+    "datasheet_X": 60,
+    "datasheet_Z": 15,
+    "datasheet_note": "Datasheet X=60, Z=15 (örnek motor için; motora bağlı)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT50",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt50-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-050/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 2,
+     "screw_dia_x_lead": "16x2",
+     "max_speed_mm_s": 100,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 2750,
+     "dynamic_load_N": 3300,
+     "static_load_N": 6200,
+     "max_force_N": 2750,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt50-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1602.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1602.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 3300,
+      "static_load_N": 6200,
+      "nominal_force_N": 2750,
+      "max_speed_mm_s": 100,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "16x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 2750,
+     "dynamic_load_N": 8100,
+     "static_load_N": 12400,
+     "max_force_N": 2750,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt50-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1605.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1605.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 7600,
+      "static_load_N": 10700,
+      "nominal_force_N": 2750,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "16x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 2750,
+     "dynamic_load_N": 10700,
+     "static_load_N": 17000,
+     "max_force_N": 2750,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt50-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1610.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1610.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 10700,
+      "static_load_N": 17200,
+      "nominal_force_N": 2750,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "Statik: web 17000 N, datasheet 17,7 KN, imotion 17200 N (çelişki)"
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 10,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": 144.0,
+    "per_stroke": 1.0,
+    "note": "L_min(gövde) = B + (A + strok) + C [ön baş + tüp + arka baş], rod ucu çıkıntısı ve motor/adaptör HARİÇ. Çizimden yorumlandı (A+* = tüp uzunluğu, B/C = baş blokları; imotion.com.tr: 'A + stroke determines the cylinder body length'), teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt50-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT050_1605.pdf"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": 85,
+    "B": 29.5,
+    "C": 29.5,
+    "D_dia": 39,
+    "E_dia": 25,
+    "F_thread": "M16x1.5",
+    "G": 32,
+    "I": 28,
+    "H": 10.5,
+    "M": 64,
+    "N": 46.5,
+    "O_thread": "M8",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT63",
+   "series": "IMT",
+   "used_before": true,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt63-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-063/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "20x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 5000,
+     "dynamic_load_N": 11000,
+     "static_load_N": 22800,
+     "max_force_N": 5000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt63-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT063_2005.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT063_2005.pdf",
+     "dim_A_mm": 100,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 14830,
+      "static_load_N": 19560,
+      "nominal_force_N": 5000,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "20x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 5000,
+     "dynamic_load_N": 17650,
+     "static_load_N": 23380,
+     "max_force_N": 5000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt63-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT063_2010.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT063_2010.pdf",
+     "dim_A_mm": 115,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 11080,
+      "static_load_N": 26090,
+      "nominal_force_N": 5000,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 16,
+     "screw_dia_x_lead": "16x16",
+     "max_speed_mm_s": 800,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 3500,
+     "dynamic_load_N": 7190,
+     "static_load_N": 14290,
+     "max_force_N": 3500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt63-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT063_1616.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT063_1616.pdf",
+     "dim_A_mm": 108,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 11570,
+      "static_load_N": 14670,
+      "nominal_force_N": 3500,
+      "max_speed_mm_s": 800,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 15,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": null,
+    "per_stroke": 1.0,
+    "base_mm_by_lead": {
+     "5": 171.0,
+     "10": 186.0,
+     "16": 179.0
+    },
+    "note": "L_min(gövde) = B + (A + strok) + C; A lead'e bağlı. Rod ucu ve motor/adaptör HARİÇ. Çizimden yorumlandı, teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt63-elektrikli-silindir/"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": "lead'e göre: 100 (20x5) / 115 (20x10) / 108 (16x16)",
+    "B": 35.5,
+    "C": 35.5,
+    "D_dia": 45,
+    "E_dia": 32,
+    "F_thread": "M16x1.5",
+    "G": 32,
+    "I": 29,
+    "H": 19,
+    "M": 76,
+    "N": 56.5,
+    "O_thread": "M8",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT80",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt80-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-080/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "25x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 7500,
+     "dynamic_load_N": 12100,
+     "static_load_N": 22600,
+     "max_force_N": 7500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt80-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT080_2505.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT080_2505.pdf",
+     "dim_A_mm": 112,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 16710,
+      "static_load_N": 25310,
+      "nominal_force_N": 7500,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "25x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 7500,
+     "dynamic_load_N": 20900,
+     "static_load_N": 37600,
+     "max_force_N": 7500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt80-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT080_2510.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT080_2510.pdf",
+     "dim_A_mm": 144,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 28250,
+      "static_load_N": 36240,
+      "nominal_force_N": 7500,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 25,
+     "screw_dia_x_lead": "25x25",
+     "max_speed_mm_s": 1250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 7500,
+     "dynamic_load_N": 12200,
+     "static_load_N": 26900,
+     "max_force_N": 7500,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt80-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT080_2525.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT080_2525.pdf",
+     "dim_A_mm": 126,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 24330,
+      "static_load_N": 37770,
+      "nominal_force_N": 7500,
+      "max_speed_mm_s": 1250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 8,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": null,
+    "per_stroke": 1.0,
+    "base_mm_by_lead": {
+     "5": 184,
+     "10": 216,
+     "25": 198
+    },
+    "note": "L_min(gövde) = B + (A + strok) + C; A lead'e bağlı. Rod ucu ve motor HARİÇ. Teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt80-elektrikli-silindir/"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": "lead'e göre: 112 (25x5) / 144 (25x10) / 126 (25x25)",
+    "B": 36,
+    "C": 36,
+    "D_dia": 60,
+    "E_dia": 40,
+    "F_thread": "M20x1.5",
+    "G": 40,
+    "I": 25,
+    "H": 20,
+    "M": 94,
+    "N": 72,
+    "O_thread": "M10",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT100",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt100-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-100/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "32x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 12000,
+     "dynamic_load_N": 14100,
+     "static_load_N": 42700,
+     "max_force_N": 12000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt100-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT100_3205.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT100_3205.pdf",
+     "dim_A_mm": 115,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 18870,
+      "static_load_N": 33370,
+      "nominal_force_N": 12000,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "32x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 12000,
+     "dynamic_load_N": 33400,
+     "static_load_N": 70080,
+     "max_force_N": 12000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt100-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT100_3210.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT100_3210.pdf",
+     "dim_A_mm": 152,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 47410,
+      "static_load_N": 76840,
+      "nominal_force_N": 12000,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 32,
+     "screw_dia_x_lead": "32x32",
+     "max_speed_mm_s": 1250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 12000,
+     "dynamic_load_N": 35160,
+     "static_load_N": 59540,
+     "max_force_N": 12000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://www.imotion.com.tr/en/imt-100/ (yalnız imotion.com.tr'de var; elektriklisilindir.com'da yok)",
+     "note": "Yalnız imotion.com.tr'de listeli; değerler imotion'dan alındı, teyit gerekli"
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1200,
+   "max_acceleration_m_s2": 8,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": null,
+    "per_stroke": 1.0,
+    "base_mm_by_lead": {
+     "5": 191,
+     "10": 228
+    },
+    "note": "L_min(gövde) = B + (A + strok) + C. Rod ucu ve motor HARİÇ. Teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt100-elektrikli-silindir/"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": "lead'e göre: 115 (32x5) / 152 (32x10)",
+    "B": 38,
+    "C": 38,
+    "D_dia": 80,
+    "E_dia": 50,
+    "F_thread": "M27x2",
+    "G": 54,
+    "I": 37.5,
+    "H": 22.5,
+    "M": 112,
+    "N": 89,
+    "O_thread": "M10",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ],
+   "stroke_max_note": "Web 1200 mm; datasheet 'Up to 1000 mm as standard' diyor (çelişki)"
+  },
+  {
+   "model": "IMT125",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt125-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imt-125/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "40x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 20000,
+     "dynamic_load_N": 26600,
+     "static_load_N": 77500,
+     "max_force_N": 20000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt125-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125_4005.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT125_4005.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 26600,
+      "static_load_N": 77500,
+      "nominal_force_N": 20000,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "40x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 30000,
+     "dynamic_load_N": 63600,
+     "static_load_N": 127010,
+     "max_force_N": 30000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt125-elektrikli-silindir/ ; https://elektriklisilindir.com/wp-content/uploads/2024/09/IMT125.0500.4010.L_Rev.pdf",
+     "datasheet_pdf": "https://elektriklisilindir.com/wp-content/uploads/2024/09/IMT125.0500.4010.L_Rev.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 47600,
+      "static_load_N": 92400,
+      "nominal_force_N": 30000,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 20,
+     "screw_dia_x_lead": "40x20",
+     "max_speed_mm_s": 1000,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 20000,
+     "dynamic_load_N": 28200,
+     "static_load_N": 68900,
+     "max_force_N": 20000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imt125-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125_4020.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT125_4020.pdf",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 36800,
+      "static_load_N": 69300,
+      "nominal_force_N": 20000,
+      "max_speed_mm_s": 1000,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 8,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": 350,
+    "per_stroke": 1.0,
+    "note": "L_min(gövde) = B + (A + strok) + C [ön baş + tüp + arka baş], rod ucu çıkıntısı ve motor/adaptör HARİÇ. Çizimden yorumlandı (A+* = tüp uzunluğu, B/C = baş blokları; imotion.com.tr: 'A + stroke determines the cylinder body length'), teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt125-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125_4005.pdf"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": 200,
+    "B": 75,
+    "C": 75,
+    "D_dia": 100,
+    "E_dia": 70,
+    "F_thread": "M36x2",
+    "G": 72,
+    "I": 39,
+    "H": 30,
+    "M": 140,
+    "N": 110,
+    "O_thread": "M12",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT125XH",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt125xh-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imtxh-series/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "50x10",
+     "max_speed_mm_s": 333,
+     "speed_basis_rpm": 2000,
+     "nominal_force_N": 45000,
+     "dynamic_load_N": 54300,
+     "static_load_N": 77500,
+     "max_force_N": 45000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 2000,
+     "source": "https://elektriklisilindir.com/imt125xh-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5010.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5010.pdf",
+     "dim_A_mm": 200,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 54300,
+      "static_load_N": 120500,
+      "nominal_force_N": 50000,
+      "max_speed_mm_s": 333,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "Web statik 77500 / datasheet 77,5 KN; imotion statik 120500 (çelişki)"
+    },
+    {
+     "lead_mm": 20,
+     "screw_dia_x_lead": "50x20",
+     "max_speed_mm_s": 666,
+     "speed_basis_rpm": 2000,
+     "nominal_force_N": 45000,
+     "dynamic_load_N": 120500,
+     "static_load_N": 127010,
+     "max_force_N": 45000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 2000,
+     "source": "https://elektriklisilindir.com/imt125xh-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5020.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5020.pdf",
+     "dim_A_mm": 218,
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 55300,
+      "static_load_N": 108800,
+      "nominal_force_N": 50000,
+      "max_speed_mm_s": 666,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "Web dinamik 120500 N (datasheet 120,5 KN) ama imotion 55300 N; lead 20 dinamiğinin lead 10'dan çok büyük olması şüpheli"
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 8,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": null,
+    "per_stroke": 1.0,
+    "base_mm_by_lead": {
+     "10": 350,
+     "20": 368
+    },
+    "note": "L_min(gövde) = B + (A + strok) + C. Teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt125xh-elektrikli-silindir/"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": "lead'e göre: 200 (50x10) / 218 (50x20)",
+    "B": 75,
+    "C": 75,
+    "D_dia": 100,
+    "E_dia": 70,
+    "F_thread": "M36x2",
+    "G": 72,
+    "I": 30,
+    "H": 30,
+    "M": 140,
+    "N": 110,
+    "O_thread": "M14",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "XH hız 2000 d/d'ya göre verilmiş; datasheet şablonu 'Max. rotational speed 3500 RPM' diyor, max_input_rpm=2000 temkinli seçildi",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMT125XH-T",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imt125xh-t-elektrikli-silindir/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "50x10",
+     "max_speed_mm_s": 333,
+     "speed_basis_rpm": 2000,
+     "nominal_force_N": 45000,
+     "dynamic_load_N": 54300,
+     "static_load_N": 77500,
+     "max_force_N": 45000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 2000,
+     "source": "https://elektriklisilindir.com/imt125xh-t-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5010.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5010.pdf",
+     "dim_A_mm": 200,
+     "note": "Web statik 77500 / datasheet 77,5 KN; imotion statik 120500 (çelişki)"
+    },
+    {
+     "lead_mm": 20,
+     "screw_dia_x_lead": "50x20",
+     "max_speed_mm_s": 666,
+     "speed_basis_rpm": 2000,
+     "nominal_force_N": 45000,
+     "dynamic_load_N": 120500,
+     "static_load_N": 127010,
+     "max_force_N": 45000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 2000,
+     "source": "https://elektriklisilindir.com/imt125xh-t-elektrikli-silindir/ ; https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5020.pdf",
+     "datasheet_pdf": "https://electriccylinder.net/wp-content/uploads/2024/05/IMT125XH_5020.pdf",
+     "dim_A_mm": 218,
+     "note": "Web dinamik 120500 N (datasheet 120,5 KN) ama imotion 55300 N; lead 20 dinamiğinin lead 10'dan çok büyük olması şüpheli"
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 8,
+   "repeatability_mm": 0.03,
+   "retracted_length_formula": {
+    "base_mm": null,
+    "per_stroke": 1.0,
+    "base_mm_by_lead": {
+     "10": 350,
+     "20": 368
+    },
+    "note": "L_min(gövde) = B + (A + strok) + C. Teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imt125xh-t-elektrikli-silindir/"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": "lead'e göre: 200 (50x10) / 218 (50x20)",
+    "B": 75,
+    "C": 75,
+    "D_dia": 100,
+    "E_dia": 70,
+    "F_thread": "M36x2",
+    "G": 72,
+    "I": 30,
+    "H": 30,
+    "M": 140,
+    "N": 110,
+    "O_thread": "M14",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "XH hız 2000 d/d'ya göre verilmiş; datasheet şablonu 'Max. rotational speed 3500 RPM' diyor, max_input_rpm=2000 temkinli seçildi",
+    "Sayfa IMT125XH ile birebir aynı içerik (kopya olabilir; 'T' varyantının farkı belirtilmemiş)",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMTR",
+   "series": "IMT",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imtr-elektrikli-silindir/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "30x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 50000,
+     "dynamic_load_N": 126300,
+     "static_load_N": 226500,
+     "max_force_N": 50000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3000,
+     "source": "https://elektriklisilindir.com/imtr-elektrikli-silindir/",
+     "note": "Sayfa: 'Vida ölçüsü 30x10 | 44x12', 'Hatveler 10 - 14'; kuvvet 50 KN"
+    },
+    {
+     "lead_mm": 12,
+     "screw_dia_x_lead": "44x12",
+     "max_speed_mm_s": 666,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 150000,
+     "dynamic_load_N": 168800,
+     "static_load_N": 334600,
+     "max_force_N": 150000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3000,
+     "source": "https://elektriklisilindir.com/imtr-elektrikli-silindir/",
+     "note": "666 mm/s, lead 12 ile 3000 d/d'da tutarsız (3000*12/60=600); XH sayfasından kopyalanmış olabilir"
+    }
+   ],
+   "stroke_options_mm": null,
+   "stroke_options_note": "Standart strok listesi yok; strok siparişte serbest (kod: IMT<boyut>.<strok 4 hane>...). Örnek 3D dosya adlarında görülen stroklar için bkz. catalog_notes.md",
+   "stroke_max_mm": 1000,
+   "max_acceleration_m_s2": 8,
+   "repeatability_mm": 0.01,
+   "retracted_length_formula": {
+    "base_mm": null,
+    "per_stroke": 1.0,
+    "note": "IMTR için ölçü doğrulanamadı",
+    "source": "https://elektriklisilindir.com/imtr-elektrikli-silindir/"
+   },
+   "gear_ratio_options": null,
+   "motor_mounting": "Inline (doğrudan, kaplin) veya Paralel (kayış/dişli); ISO 15552 ön montaj",
+   "motor_flange_note": "Katalogda motor flanşı listesi yok: 'Servo veya step motor; X,Y,Z,K seçilen motor marka/modeline göre değişir' (adaptör motora özel). SV660P/MS1H motor flanşı (60/80/100/130) için adaptör teyidi gerekli.",
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "dimensions_mm": {
+    "A": "IMTR için ayrı ölçü tablosu yok; sayfadaki tablo XH ile birebir aynı: A 200/218",
+    "B": 75,
+    "C": 75,
+    "D_dia": 100,
+    "E_dia": 70,
+    "F_thread": "M36x2",
+    "G": 72,
+    "I": 30,
+    "H": 30,
+    "M": 140,
+    "N": 110,
+    "O_thread": "M14",
+    "K_X_Y_Z": "motora bağlı (katalogda ** = seçilen motor/adaptöre göre)"
+   },
+   "rod_anti_rotation": "Piston rodu dönmeye karşı korumalı (kızaklı yatak ile 600 mm'ye kadar) - datasheet",
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg katalogda yok",
+    "buckling_or_speed_limit eğrisi katalogda yok (kritik hız / burkulma)",
+    "gear_ratio: katalogda dişli/kayış oranı listesi yok (paralel montajda kayış/dişli var ama oran verilmemiş)",
+    "retracted_length: rod ucu çıkıntısı (G/I ölçüleri) ve motor tarafı X/Y/Z katalogda motora bağlı; teyit gerekli",
+    "strok seçenekleri: standart adımlar yayımlanmamış, yalnız 'standart maks. strok'; sipariş kodundaki strok serbest",
+    "load değerleri iki kaynakta (elektriklisilindir.com ve imotion.com.tr) çelişiyor, bkz. alt_values_imotion_com_tr",
+    "IMTR: tüm değerler şüpheli (ölçü tablosu XH kopyası, hız-lead tutarsızlığı, hatve '10-14' ile vida '30x10/44x12' uyumsuz, silindir ölçüsü '100-125'); satın alma öncesi üreticiden teyit",
+    "motor flanş uyumu teyit gerekli"
+   ]
+  },
+  {
+   "model": "IMTL40",
+   "series": "IMTL (güncel imotion.com.tr adı: IMTK)",
+   "used_before": true,
+   "source_urls": [
+    "https://elektriklisilindir.com/imtl40-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imtk-040/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "12x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 900,
+     "dynamic_load_N": 5000,
+     "static_load_N": 8600,
+     "max_force_N": 900,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imtl40-elektrikli-silindir/",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 5040,
+      "static_load_N": 5830,
+      "nominal_force_N": 900,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "12x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 900,
+     "dynamic_load_N": 3820,
+     "static_load_N": 4570,
+     "max_force_N": 900,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "hız/yük: https://www.imotion.com.tr/en/imtk-040/ (üretici; 12x10, 500 mm/s)",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 3820,
+      "static_load_N": 4570,
+      "nominal_force_N": 900,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "elektriklisilindir.com IMTL40 sayfasında yalnız 12x5 var; 12x10 yalnız imotion.com.tr IMTK40 sayfasında (referans montaj kodu IMTL40.200.12.10... ile uyumlu). Yük değerleri yalnız imotion."
+    }
+   ],
+   "stroke_options_mm": [
+    50,
+    100,
+    150,
+    160,
+    200,
+    250,
+    300,
+    400,
+    500
+   ],
+   "stroke_options_note": "Liste = tedarikçinin yayımladığı örnek 3D (STEP) model stroklarıdır; tam üretim aralığı değil. Inline=.L, Paralel=.G (IMTL63 sayfasındaki iki sütundan çıkarım; IMTL40 sayfası metinde sütun ayrımı vermiyor).",
+   "stroke_max_mm": 600,
+   "max_acceleration_m_s2": 12,
+   "repeatability_mm": 0.03,
+   "motor_mounting": "Inline veya Paralel (L / G)",
+   "dimensions_mm": {
+    "inline": {
+     "A": 93,
+     "B": 63,
+     "C": 10,
+     "D": 6,
+     "E": 24,
+     "F": 25,
+     "G": 22,
+     "H_thread": "M12x1.25",
+     "I": 54,
+     "J": 38,
+     "K_thread": "M6",
+     "L": 60
+    },
+    "parallel": {
+     "A": 93,
+     "B": 42,
+     "C": 10,
+     "D": 6,
+     "E": 24,
+     "F": 25,
+     "G": 22,
+     "H_thread": "M12x1.25",
+     "I": 54,
+     "J": 38,
+     "K_thread": "M6",
+     "L": 122,
+     "M": 71
+    },
+    "note": "Ölçü tabloları çizimle eşleştirildi (12 sütun=Inline, 13 sütun/M=Paralel). A+strok = tüp uzunluğu, B** = motor adaptör bloğu; C=rod boynu, E=rod dişli kısım, H=rod dişi."
+   },
+   "retracted_length_formula": {
+    "base_mm_inline": 156,
+    "base_mm_parallel": 135,
+    "per_stroke": 1.0,
+    "note": "L_min(gövde) = A + B + strok (tüp + motor adaptör bloğu), rod ucu çıkıntısı hariç. Çizimden yorumlandı, teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imtl40-elektrikli-silindir/ (Ölçüler + çizim)"
+   },
+   "gear_ratio_options": null,
+   "motor_flange_note": null,
+   "motor_flanges_mm": [
+    60
+   ],
+   "motor_flanges_source": "ref STEP: IMTL-40-KK (60) adaptörü + 60_80 motor",
+   "mass_kg": null,
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg yok",
+    "burkulma/kritik hız yok",
+    "dişli/kayış oranı (paralel) yok",
+    "motor flanşı yok (çizimde örnek 400 W / 750 W AC servo gösteriliyor)",
+    "Inline/Paralel (.L/.G) atamasında IMTL40 sayfası metinde sütun ayrımı vermiyor",
+    "rod ucu çıkıntısı (E/C) ve motor adaptörü ile L_min tamamlanmalı",
+    "load değerleri iki kaynakta çelişiyor (alt_values_imotion_com_tr)",
+    "12x10 satırı: elektriklisilindir.com'da yok, değerler imotion.com.tr'den"
+   ]
+  },
+  {
+   "model": "IMTL63",
+   "series": "IMTL (güncel imotion.com.tr adı: IMTK)",
+   "used_before": false,
+   "source_urls": [
+    "https://elektriklisilindir.com/imtl63-elektrikli-silindir/",
+    "https://www.imotion.com.tr/en/imtk-063/"
+   ],
+   "lead_options": [
+    {
+     "lead_mm": 5,
+     "screw_dia_x_lead": "16x5",
+     "max_speed_mm_s": 250,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 2000,
+     "dynamic_load_N": 8100,
+     "static_load_N": 12400,
+     "max_force_N": 2000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://elektriklisilindir.com/imtl63-elektrikli-silindir/",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 10290,
+      "static_load_N": 11220,
+      "nominal_force_N": 2000,
+      "max_speed_mm_s": 250,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     }
+    },
+    {
+     "lead_mm": 10,
+     "screw_dia_x_lead": "16x10",
+     "max_speed_mm_s": 500,
+     "speed_basis_rpm": 3000,
+     "nominal_force_N": 2000,
+     "dynamic_load_N": 11570,
+     "static_load_N": 14670,
+     "max_force_N": 2000,
+     "max_force_note": "türetilmiş: min(nominal_force_N, dynamic_load_N)",
+     "max_input_rpm": 3500,
+     "source": "https://www.imotion.com.tr/en/imtk-063/ (yalnız imotion)",
+     "alt_values_imotion_com_tr": {
+      "dynamic_load_N": 11570,
+      "static_load_N": 14670,
+      "nominal_force_N": 2000,
+      "max_speed_mm_s": 500,
+      "source": "imotion.com.tr ürün sayfası (üretici, güncel site)"
+     },
+     "note": "Yalnız imotion.com.tr IMTK63 sayfasında"
+    }
+   ],
+   "stroke_options_mm": [
+    50,
+    90,
+    100,
+    190,
+    200,
+    250,
+    300,
+    400,
+    500
+   ],
+   "stroke_options_note": "Liste = tedarikçinin yayımladığı örnek 3D (STEP) model stroklarıdır; tam üretim aralığı değil. Inline=.L, Paralel=.G (IMTL63 sayfasındaki iki sütundan çıkarım; IMTL40 sayfası metinde sütun ayrımı vermiyor).",
+   "stroke_max_mm": 250,
+   "max_acceleration_m_s2": 12,
+   "repeatability_mm": 0.03,
+   "motor_mounting": "Inline veya Paralel (L / G)",
+   "dimensions_mm": {
+    "inline": {
+     "A": 96,
+     "B": 88,
+     "C": 11,
+     "D": 8,
+     "E": 32,
+     "F": 32,
+     "G": 27,
+     "H_thread": "M16x1.5",
+     "I": 75,
+     "J": 56.5,
+     "K_thread": "M8",
+     "L": 80
+    },
+    "parallel": {
+     "A": 96,
+     "B": 47,
+     "C": 11,
+     "D": 8,
+     "E": 32,
+     "F": 32,
+     "G": 27,
+     "H_thread": "M16x1.5",
+     "I": 75,
+     "J": 56.5,
+     "K_thread": "M8",
+     "L": 163,
+     "M": 84
+    },
+    "note": "Ölçü tabloları çizimle eşleştirildi (12 sütun=Inline, 13 sütun/M=Paralel). A+strok = tüp uzunluğu, B** = motor adaptör bloğu; C=rod boynu, E=rod dişli kısım, H=rod dişi."
+   },
+   "retracted_length_formula": {
+    "base_mm_inline": 184,
+    "base_mm_parallel": 143,
+    "per_stroke": 1.0,
+    "note": "L_min(gövde) = A + B + strok (tüp + motor adaptör bloğu), rod ucu çıkıntısı hariç. Çizimden yorumlandı, teyit gerekli.",
+    "source": "https://elektriklisilindir.com/imtl63-elektrikli-silindir/ (Ölçüler + çizim)"
+   },
+   "gear_ratio_options": null,
+   "motor_flange_note": null,
+   "motor_flanges_mm": null,
+   "mass_kg": null,
+   "buckling_or_speed_limit_note": null,
+   "verify": [
+    "mass_kg yok",
+    "burkulma/kritik hız yok",
+    "dişli/kayış oranı (paralel) yok",
+    "motor flanşı yok (çizimde örnek 400 W / 750 W AC servo gösteriliyor)",
+    "Inline/Paralel (.L/.G) atamasında IMTL40 sayfası metinde sütun ayrımı vermiyor",
+    "rod ucu çıkıntısı (E/C) ve motor adaptörü ile L_min tamamlanmalı",
+    "load değerleri iki kaynakta çelişiyor (alt_values_imotion_com_tr)",
+    "12x10 satırı: elektriklisilindir.com'da yok, değerler imotion.com.tr'den",
+    "IMTL63: elektriklisilindir.com 'standart maks. strok 250 mm' ama STEP listesinde 300/400/500 var (çelişki); imotion IMTK63: 1000 mm",
+    "motor flanş uyumu teyit gerekli"
+   ],
+   "stroke_max_note": "elektriklisilindir.com 250 mm; imotion.com.tr IMTK63 1000 mm"
+  }
+ ]
+}

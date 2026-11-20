@@ -1,0 +1,15 @@
+{
+ "files": [
+  "engine/__init__.py",
+  "engine/catalog.py",
+  "engine/kinematics.py",
+  "engine/sizing.py",
+  "engine/workspace.py",
+  "app/__init__.py",
+  "app/engine_bridge.py",
+  "app/web_entry.py",
+  "data/actuators.json",
+  "data/servos.json",
+  "data/reference_geometry.json"
+ ]
+}
