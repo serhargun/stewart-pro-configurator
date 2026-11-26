@@ -21,6 +21,9 @@ def load_catalog(data_dir=None):
         except (OSError, ValueError):
             warnings.append(f"{fn} bulunamadı veya okunamadı")
     out["warnings"] = warnings
+    prices = engine_bridge._prices()   # yalnız yerel sürümde var
+    if prices:
+        out["prices"] = prices
     return out
 
 
@@ -44,18 +47,29 @@ def suggest_bom(cand):
     kn = "büyük silindirlerde kardan boyutu teyit gerekli"
     rows = [
         (f"Elektrikli silindir {a.get('model')}, strok {a.get('stroke_mm'):g}, hatve {a.get('lead_mm'):g}", "", 6, sup, nt),
-        ("Servo motor", s.get("motor_code") or "", 6, "Innovance", ""),
-        ("Servo sürücü SV660P", s.get("drive_model") or "", 6, "Innovance", ""),
+        ("Servo motor", s.get("motor_code") or "", 6, "Inovance", ""),
+        ("Servo sürücü SV660P", s.get("drive_model") or "", 6, "Inovance", ""),
         ("Kardan mafsal Mario Ferri 1G (alt)", "", 6, "Mario Ferri", kn),
         ("Kardan mafsal Mario Ferri 1G (üst)", "", 6, "Mario Ferri", kn),
-        ("Alt plaka", f"Ø{geo.get('base_plate_diameter_mm', '')}", 1, "", ""),
-        ("Üst plaka", f"Ø{geo.get('top_plate_diameter_mm', '')}", 1, "", ""),
     ]
+    pl = cand.get("plates")
+    if pl:
+        b, t = pl["base"], pl["top"]
+        rows += [("Alt plaka", f"Ø{b['diameter_mm']} × {b['thickness_mm']:g} mm, düz kesik ±{b['flat_half_width_mm']}", 1, "",
+                  f"kardan delik dairesi Ø{b['hole_circle_diameter_mm']:g}"),
+                 ("Üst plaka", f"Ø{t['diameter_mm']} × {t['thickness_mm']:g} mm", 1, "",
+                  f"kardan delik dairesi Ø{t['hole_circle_diameter_mm']:g}")]
+    else:
+        rows += [("Alt plaka", f"Ø{geo.get('base_plate_diameter_mm', '')}", 1, "", ""),
+                 ("Üst plaka", f"Ø{geo.get('top_plate_diameter_mm', '')}", 1, "", "")]
     return [dict(part_name=n, part_code=c, qty=q, supplier=sp, note=note) for n, c, q, sp, note in rows]
 
 
 def default_plate(cand):
-    geo = (cand or {}).get("geometry", {})
+    geo, pl = (cand or {}).get("geometry", {}), (cand or {}).get("plates")
+    if pl:
+        return {"base_diameter_mm": pl["base"]["diameter_mm"], "top_diameter_mm": pl["top"]["diameter_mm"],
+                "thickness_mm": pl["base"]["thickness_mm"], "material": "", "holes": []}
     return {"base_diameter_mm": geo.get("base_plate_diameter_mm"),
             "top_diameter_mm": geo.get("top_plate_diameter_mm"),
             "thickness_mm": None, "material": "", "holes": []}

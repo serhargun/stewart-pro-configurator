@@ -209,6 +209,22 @@ function renderCaseTable() {
 $("#addcase").onclick = () => { caseRows = reqFromForm().load_cases; caseRows.push(newCase()); renderCaseTable(); };
 renderCaseTable();
 
+// gerçek iki siparişin isterleri (tests/test_engine_real_orders.py ile aynı)
+const PRESETS = {
+  imt63: { cases: [{ payload_kg: 100, lin_speed_mm_s: 750, ang_speed_deg_s: 165, accel_m_s2: null }, { payload_kg: 200, lin_speed_mm_s: 200, ang_speed_deg_s: 80, accel_m_s2: null }],
+    f: { cog_height_mm: 100, x_mm: 150, y_mm: 150, z_mm: 150, roll_deg: 25, pitch_deg: 25, yaw_deg: 40 } },
+  imtl40: { cases: [{ payload_kg: 40, lin_speed_mm_s: 250, ang_speed_deg_s: 0, accel_m_s2: null }],
+    f: { cog_height_mm: 100, x_mm: 75, y_mm: 75, z_mm: 75, roll_deg: 20, pitch_deg: 20, yaw_deg: 20 } },
+};
+$$("[data-preset]").forEach(b => b.onclick = () => {
+  const p = PRESETS[b.dataset.preset];
+  caseRows = p.cases.map(c => ({ ...c }));
+  renderCaseTable();
+  Object.entries(p.f).forEach(([k, v]) => { $(`#reqform [name="${k}"]`).value = v; });
+  $("#reqform [name=simultaneous]").checked = false;
+  $("#sizemsg").textContent = "Örnek yüklendi; Hesapla'ya basın." + (b.dataset.preset === "imtl40" ? " (Çalışma uzayı siparişte yoktu, varsayımdır.)" : "");
+});
+
 $("#reqform").onsubmit = async e => {
   e.preventDefault();
   $("#sizemsg").textContent = "Hesaplanıyor…";
@@ -219,7 +235,8 @@ $("#reqform").onsubmit = async e => {
     $("#sizemsg").textContent = "";
     $("#mockbar").hidden = !lastResult.mock;
     renderCandidates();
-    $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
+    // 3D görünüm boyutlanırken düzen kayıyor; kaydırmayı düzen oturduktan sonra yap
+    setTimeout(() => ($("#viewcard").hidden ? $("#results") : $("#viewcard")).scrollIntoView({ block: "start" }), 150);
   } catch (x) { $("#sizemsg").textContent = x.message; }
   $("#sizebtn").disabled = false;
 };
@@ -300,6 +317,44 @@ api("/reference-capacity").then(r => {
     `</table><div class="small">${esc(r.coefficients_note || "")}</div>` + (r.notes || []).map(n => `<div class="small">• ${esc(n)}</div>`).join("");
 }).catch(() => {});
 
+function platesTable(c) {
+  const p = c.plates, g = c.geometry;
+  if (!p) return `<h3>Plakalar</h3><div class="small">Alt Ø${g.base_plate_diameter_mm} / üst Ø${g.top_plate_diameter_mm} mm · kardan yarıçapı alt ${g.R_base_mm} / üst ${g.R_top_mm} mm</div>`;
+  const b = p.base, t = p.top;
+  return `<h3>Plakalar</h3><div class="tablewrap"><table class="plates"><tr><th></th><th>Dış çap</th><th>Kalınlık</th><th>Kardan delik dairesi</th><th>Biçim</th></tr>
+    <tr><td>Alt plaka</td><td><b>Ø${b.diameter_mm} mm</b></td><td>${b.thickness_mm} mm</td><td>Ø${b.hole_circle_diameter_mm} mm (R ${g.R_base_mm})</td><td>daire, iki yanı düz kesik ±${b.flat_half_width_mm} mm</td></tr>
+    <tr><td>Üst plaka</td><td><b>Ø${t.diameter_mm} mm</b></td><td>${t.thickness_mm} mm</td><td>Ø${t.hole_circle_diameter_mm} mm (R ${g.R_top_mm})</td><td>köşeleri yuvarlatılmış çokgen (dış çap çevrel çember)</td></tr></table></div>
+    <div class="small">${esc(p.note)}</div>`;
+}
+
+function driveBox(c) {
+  const d = c.drive_settings;
+  if (!d) return "";
+  const r = (k, v) => `<tr><td>${k}</td><td><b>${v}</b></td></tr>`;
+  return `<details class="box"><summary><b>Sürücü ayar önerisi (SV660P, pulse modu)</b> <span class="small">${String(d.pulse_per_mm).replace(".", ",")} pulse/mm</span></summary>
+    <div class="tablewrap"><table>
+    ${r("Elektronik dişli (enkoder / pulse)", d.electronic_gear)}
+    ${r("Motor turu başına pulse", d.pulse_per_rev)}
+    ${r("Bacak çözünürlüğü", `${String(d.pulse_per_mm).replace(".", ",")} pulse/mm (1 pulse ≈ ${String(d.resolution_um).replace(".", ",")} µm)`)}
+    ${r("En yüksek pulse frekansı", `${String(d.max_pulse_kHz).replace(".", ",")} kHz` + (d.high_speed_input ? " → yüksek hızlı pulse girişi (H05-01 = 1)" : ""))}
+    ${r("Enkoder çıkışı H05-17", `${d.H05_17} (×4 = ${d.pulse_per_rev} sayım/tur)`)}
+    ${r(`Takip hatası eşiği H0A-10 (${d.follow_err_mm} mm)`, d.H0A_10)}
+    </table></div><div class="small">${esc(d.note)}</div></details>`;
+}
+
+const money = (v, cur) => Number(v).toLocaleString("tr-TR", { maximumFractionDigits: 2 }) + " " + ({ TRY: "TL" }[cur] || cur);
+function costBox(c) {
+  const k = c.cost;
+  if (!k) return "";
+  const tot = Object.entries(k.totals).map(([cur, v]) => `<b>${money(v, cur)}</b>`).join(" + ") +
+    (k.missing.length ? ` <span class="bad">· eksik: ${k.missing.length} kalem fiyatsız, toplam tam değil</span>` : "");
+  const tr = x => `<tr><td>${esc(x.name)}${x.note ? `<div class="small">${esc(x.note)}</div>` : ""}</td><td>${x.qty ?? ""}</td><td>${x.unit != null ? money(x.unit, x.currency) : ""}</td><td>${money(x.total, x.currency)}</td><td class="small">${esc(x.source)}</td></tr>`;
+  return `<details class="box cost"><summary><b>Tahmini malzeme maliyeti</b> <span class="tag">iç kullanım</span> ${tot}</summary>
+    <div class="tablewrap"><table><tr><th>Kalem</th><th>Adet</th><th>Birim</th><th>Toplam</th><th>Kaynak</th></tr>${k.lines.map(tr).join("")}${k.sets.map(tr).join("")}</table></div>
+    ${k.missing.length ? `<div class="small bad">Fiyatı bulunamayan: ${k.missing.map(esc).join(", ")}</div>` : ""}
+    <div class="small">${esc(k.note)}</div></details>`;
+}
+
 const SLIDERS = [["x", "X (mm)"], ["y", "Y (mm)"], ["z", "Z (mm)"], ["roll", "Roll (°)"], ["pitch", "Pitch (°)"], ["yaw", "Yaw (°)"]];
 function select(i, scroll) {
   selected = lastResult.candidates[i];
@@ -308,7 +363,7 @@ function select(i, scroll) {
   const c = selected, g = c.geometry, a = c.actuator, s = c.servo;
   $("#viewcard").hidden = false;
   $("#rectitle").textContent = i === 0 ? "Önerilen konfigürasyon" : `Seçilen konfigürasyon (alternatif #${c.rank})`;
-  const brake = s.brake_option == null ? "fren bilgisi yok" : s.brake_option ? "fren var" : "fren yok";
+  const brake = s.brake_option == null ? "fren bilgisi yok" : s.brake_option ? "frenli seçeneği var" : "frenli seçeneği yok";
   const row = (k, v) => `<div class="dimrow"><span>${k}</span><b>${v}</b></div>`;
   const reasons = (c.notes || []).filter(n => n && !n.startsWith("Uygun değil"));
   $("#recbox").innerHTML =
@@ -316,10 +371,8 @@ function select(i, scroll) {
     row("Elektrikli silindir", `${esc(a.model)}, strok ${a.stroke_mm} mm, hatve ${a.lead_mm} mm ${TBC.replace("teyit gerekli", "sipariş kodu teyit gerekli")}`) +
     row("Servo motor", `${esc(s.motor_code || "—")} · ${s.rated_power_W} W${s.voltage_V ? " · " + s.voltage_V + " V" : ""} · ${brake}`) +
     row("Servo sürücü", esc(s.drive_model || "—")) +
-    row("Plaka çapları", `alt Ø${g.base_plate_diameter_mm} / üst Ø${g.top_plate_diameter_mm} mm`) +
-    row("Kardan yarıçapları", `alt ${g.R_base_mm} / üst ${g.R_top_mm} mm`) +
     row("Home yüksekliği", `${g.home_height_mm} mm`) +
-    `<div class="limit">${esc(limitingText(c))}</div>`;
+    `<div class="limit">${esc(limitingText(c))}</div>` + platesTable(c) + driveBox(c) + costBox(c);
   $("#margins").innerHTML = "<h3>Pay yüzdeleri</h3>" + marginBars(c.margins || {});
   const keys = ["x_mm", "y_mm", "z_mm", "roll_deg", "pitch_deg", "yaw_deg"];
   $("#sliders").innerHTML = SLIDERS.map(([, label], n) => {
@@ -420,13 +473,57 @@ function collect() {
   });
 }
 
+/* yazdırılabilir teknik föy: ekrandaki (kaydedilmemiş olabilir) sipariş verisinden */
+function openSheet(o) {
+  const c = o.selected_candidate, r = o.requirements || {}, p = o.plate || {};
+  const AX = [["x_mm", "X", "mm"], ["y_mm", "Y", "mm"], ["z_mm", "Z", "mm"], ["roll_deg", "Roll", "°"], ["pitch_deg", "Pitch", "°"], ["yaw_deg", "Yaw", "°"]];
+  const tbl = (head, rows) => `<table><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr>${rows.map(rw => `<tr>${rw.map(x => `<td>${x ?? ""}</td>`).join("")}</tr>`).join("")}</table>`;
+  let h = `<h1>Stewart PRO — Teknik föy</h1><div class="meta">Sipariş ${esc(o.order_no)}${o.customer ? " · " + esc(o.customer) : ""} · durum: ${esc(o.status)} · ${new Date().toLocaleDateString("tr-TR")}</div>`;
+  h += `<h2>İsterler</h2>` + tbl(["Yük (kg)", "Doğrusal hız (mm/s)", "Açısal hız (°/s)", "İvme (m/s²)"],
+    (r.load_cases || []).map(x => [x.payload_kg, x.lin_speed_mm_s ?? 0, x.ang_speed_deg_s ?? 0, x.accel_m_s2 ?? "—"])) +
+    `<p>Çalışma uzayı (±): ${AX.map(([k, n, u]) => `${n} ${r[k] ?? 0} ${u}`).join(" · ")}${r.simultaneous ? " · eksenler aynı anda" : ""} · ağırlık merkezi ${r.cog_height_mm ?? "—"} mm · emniyet katsayısı ${r.safety_factor ?? "—"}</p>`;
+  if (c) {
+    const a = c.actuator, s = c.servo, g = c.geometry, pl = c.plates, d = c.drive_settings;
+    h += `<h2>Konfigürasyon</h2>` + tbl(["Kalem", "Değer"], [
+      ["Elektrikli silindir (6)", `${esc(a.model)}, strok ${a.stroke_mm} mm, hatve ${a.lead_mm} mm, kapalı boy ${a.retracted_length_mm ?? "—"} mm`],
+      ["Servo motor (6)", `${esc(s.motor_code || "—")} · ${s.rated_power_W} W`], ["Servo sürücü (6)", esc(s.drive_model || "—")],
+      ["Kardan yarıçapı", `alt ${g.R_base_mm} / üst ${g.R_top_mm} mm`], ["Home yüksekliği (kardan–kardan)", `${g.home_height_mm} mm`],
+      ["Durum", c.feasible ? "Uygun" : "Uygun değil"], ["En dar pay", esc(limitingText(c).replace(/^En dar pay:\s*/, ""))]]);
+    h += `<h2>Plakalar</h2>` + tbl(["", "Dış çap", "Kalınlık", "Kardan delik dairesi", "Biçim"], [
+      ["Alt", `Ø${p.base_diameter_mm ?? pl?.base.diameter_mm ?? "—"} mm`, `${p.thickness_mm ?? pl?.base.thickness_mm ?? "—"} mm`, pl ? `Ø${pl.base.hole_circle_diameter_mm} mm` : `R ${g.R_base_mm}`, pl ? `iki yanı düz kesik ±${pl.base.flat_half_width_mm} mm` : ""],
+      ["Üst", `Ø${p.top_diameter_mm ?? pl?.top.diameter_mm ?? "—"} mm`, `${p.thickness_mm ?? pl?.top.thickness_mm ?? "—"} mm`, pl ? `Ø${pl.top.hole_circle_diameter_mm} mm` : `R ${g.R_top_mm}`, pl ? "köşeleri yuvarlatılmış çokgen (dış çap çevrel çember)" : ""]]) +
+      (p.material ? `<p>Malzeme: ${esc(p.material)}</p>` : "");
+    // ustaya: delik dairesi çapı + açı (plakanın +X ekseninden saat yönü tersine)
+    const ang = p => { const a = Math.atan2(p[1], p[0]) * 180 / Math.PI; return ((a % 360) + 360) % 360; };
+    const fmt = a => (Math.round(a * 10) / 10).toString().replace(".", ",") + "°";
+    h += `<h3>Kardan bağlantı noktaları</h3><p>Alt plaka: Ø${2 * g.R_base_mm} mm daire üzerinde · Üst plaka: Ø${2 * g.R_top_mm} mm daire üzerinde. Açılar plakanın +X ekseninden saat yönünün tersine.</p>` +
+      tbl(["Bacak", "Alt plaka açısı", "Üst plaka açısı"], g.base_joints_mm.map((b, i) => [i + 1, fmt(ang(b)), fmt(ang(g.top_joints_mm[i]))]));
+    if (d) h += `<h2>Sürücü ayarları (SV660P, pulse modu)</h2>` + tbl(["Parametre", "Değer"], [
+      ["Elektronik dişli", d.electronic_gear], ["Pulse / mm", d.pulse_per_mm], ["En yüksek pulse frekansı", `${d.max_pulse_kHz} kHz${d.high_speed_input ? " (H05-01 = 1)" : ""}`],
+      ["H05-17 enkoder çıkışı", d.H05_17], [`H0A-10 takip hatası (${d.follow_err_mm} mm)`, d.H0A_10]]) + `<p class="small">${esc(d.note)}</p>`;
+  }
+  if ((p.holes || []).length) h += `<h2>Özel delikler</h2>` + tbl(["Açıklama", "Adet", "Çap (mm)", "Konum"], p.holes.map(x => [esc(x.desc), x.qty, x.dia_mm, esc(x.pos)]));
+  h += `<h2>Malzeme listesi</h2>` + tbl(["Parça", "Kod", "Adet", "Tedarikçi", "Not"], (o.bom || []).map(b => [esc(b.part_name), esc(b.part_code), b.qty, esc(b.supplier), esc(b.note)]));
+  if (o.notes) h += `<h2>Notlar</h2><p style="white-space:pre-wrap">${esc(o.notes)}</p>`;
+  const w = window.open("", "_blank");
+  if (!w) { alert("Açılır pencere engellendi; tarayıcıda bu siteye izin verin."); return; }
+  w.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Teknik föy ${esc(o.order_no)}</title><style>
+    body{font:13px/1.45 system-ui,Segoe UI,Arial,sans-serif;color:#111;margin:24px;max-width:900px}
+    h1{font-size:20px;margin:0}h2{font-size:15px;margin:18px 0 6px;border-bottom:1px solid #999}h3{font-size:13px;margin:12px 0 4px}
+    .meta{color:#555;margin:4px 0 8px}.small{font-size:11px;color:#555}table{border-collapse:collapse;width:100%;margin:4px 0}
+    th,td{border:1px solid #bbb;padding:3px 6px;text-align:left;vertical-align:top}th{background:#eee}
+    @media print{body{margin:10mm}button{display:none}}</style></head><body>
+    <button onclick="print()" style="float:right">Yazdır</button>${h}</body></html>`);
+  w.document.close();
+}
+
 function renderOrder() {
   const o = cur, p = o.plate || {}, c = o.selected_candidate, r = o.requirements || {};
   const inp = (f, v, t = "text") => `<input data-f="${f}" type="${t}" value="${esc(v)}">`;
   const cell = (k, v, t = "text") => `<td><input data-k="${k}" type="${t}" step="any" value="${esc(v)}"></td>`;
   const a = c?.actuator, s = c?.servo;
   $("#orderdetail").innerHTML = `
-  <div class="card"><div class="row-actions" style="margin:0 0 10px"><button id="back">← Liste</button><h2 style="margin:0">${esc(o.order_no)}</h2></div>
+  <div class="card"><div class="row-actions" style="margin:0 0 10px"><button id="back">← Liste</button><h2 style="margin:0">${esc(o.order_no)}</h2><button id="sheet" title="Kaydedilmiş bilgilerle yazdırılabilir sayfa açar">Teknik föy (yazdır)</button></div>
     <div class="cols">
       <label>Sipariş no${inp("order_no", o.order_no)}</label>
       <label>Müşteri${inp("customer", o.customer)}</label>
@@ -464,6 +561,7 @@ function renderOrder() {
 
   const d = $("#orderdetail");
   $("#back", d).onclick = loadOrders;
+  $("#sheet", d).onclick = () => { collect(); openSheet(cur); };
   $("#addbom", d).onclick = () => { collect(); cur.bom.push({ part_name: "", part_code: "", qty: 1, supplier: "", note: "" }); renderOrder(); };
   $("#addhole", d).onclick = () => { collect(); cur.plate.holes.push({ desc: "", qty: 1, dia_mm: null, pos: "" }); renderOrder(); };
   $$("[data-delbom]", d).forEach(b => b.onclick = () => { collect(); cur.bom.splice(+b.dataset.delbom, 1); renderOrder(); });
@@ -517,12 +615,22 @@ async function loadCatalog() {
   };
   const list = a => a && a.length ? `<ul class="small">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "";
   let h = (c.warnings || []).map(w => `<div class="mockbar">${esc(w)}</div>`).join("");
+  const pr = c.prices;
+  if (pr) {
+    const row = (name, x) => `<tr><td>${name}</td><td><b>${Number(x.price).toLocaleString("tr-TR")} ${x.currency === "TRY" ? "TL" : esc(x.currency)}</b></td><td class="small">${esc([x.supplier, x.source].filter(Boolean).join(" · "))}${x.note ? " — " + esc(x.note) : ""}</td></tr>`;
+    h += `<details class="card" open><summary><b>Bilinen teklif fiyatları</b> <span class="tag">iç kullanım</span> <span class="small">KDV hariç, birim fiyat</span></summary>
+      <div class="small">${esc(pr.note || "")}</div><div class="tablewrap"><table><tr><th>Kalem</th><th>Birim fiyat</th><th>Kaynak</th></tr>` +
+      pr.actuators.map(x => row(`${esc(x.code)} <span class="small">(${esc(x.model)}, strok ${x.stroke_mm}${x.lead_mm ? ", hatve " + x.lead_mm : ""})</span>`, x)).join("") +
+      pr.motors.map(x => row(`${esc(x.motor_code)}${x.brake ? " frenli" : ""}`, x)).join("") +
+      pr.drives.map(x => row(esc(x.drive_model), x)).join("") +
+      pr.cables.map(x => row(esc(x.name), x)).join("") + `</table></div></details>`;
+  }
   const am = c.actuators_meta || {};
   h += `<div class="card"><h2>Silindir modelleri</h2><div class="small">Kaynak: ${srcs(am.source)} · alındı ${esc(am.retrieved || "")}</div>
     <div class="tablewrap"><table><tr><th>Model</th><th>Seri</th><th>Strok</th><th>Max strok</th><th>Kapalı boy</th><th>Max ivme (m/s²)</th><th>Kütle (kg)</th><th>Kaynaklar</th><th>Teyit</th></tr>` +
     c.actuators.map(m => {
       const f = m.retracted_length_formula || {}, base = f.base_mm ?? (f.base_mm_inline != null ? `${f.base_mm_inline} (inline) / ${f.base_mm_parallel} (paralel)` : null);
-      return `<tr><td><b>${esc(m.model)}</b></td><td>${v(m.series)}</td><td>${v(m.stroke_options_mm && m.stroke_options_mm.join(", "))}</td><td>${v(m.stroke_max_mm)}</td>
+      return `<tr><td><b>${esc(m.model)}</b>${m.used_before ? ' <span class="tag" title="Daha önce siparişte kullanıldı">kullanıldı</span>' : ""}</td><td>${v(m.series)}</td><td>${v(m.stroke_options_mm && m.stroke_options_mm.join(", "))}</td><td>${v(m.stroke_max_mm)}</td>
         <td>${base == null ? TBC : `${base} + ${f.per_stroke}×strok`}</td><td>${v(m.max_acceleration_m_s2)}</td><td>${v(m.mass_kg)}</td>
         <td>${(m.source_urls || []).map((u, i) => link(u, "kaynak " + (i + 1))).join("<br>")}</td><td>${m.verify?.length ? TBC + `<details><summary class="small">${m.verify.length} madde</summary>${list(m.verify)}</details>` : ""}</td></tr>`;
     }).join("") + "</table></div></div>";

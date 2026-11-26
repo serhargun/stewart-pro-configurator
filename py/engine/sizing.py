@@ -16,6 +16,14 @@ DEFAULT_JOINT_LIMIT_DEG = 40.0
 CHUNK = 600
 SING_TOL = 1e-4              # Hadamard oranı altında jacobian tekil sayılır
 FACTORS = ["kuvvet", "hız", "strok", "kardan açısı", "motor devri", "motor torku"]
+R_STEP_MM = 5.0   # kardan yarıçap adımı (ustaya küsuratsız ölçü)
+
+
+def plate_dia(R, margin):
+    """Plaka dış çapı: 2 x (kardan yarıçapı + plaka payı), 10 mm'ye yukarı yuvarlanmış."""
+    return float(np.ceil(2 * (float(R) + margin) / 10.0 - 1e-9) * 10.0)
+
+
 MARGIN_KEYS = ["force_pct", "speed_pct", "stroke_pct", "joint_angle_pct", "motor_rpm_pct", "motor_torque_pct"]
 
 
@@ -406,7 +414,11 @@ def _prepare(req, cat, srv, ref, need_models=True):
     if srv is not None:
         mot = [m for m in srv.get("motors", []) if all(_num(m.get(k)) for k in
                ("rated_power_W", "rated_torque_Nm", "peak_torque_Nm", "max_speed_rpm"))]
-        sup = getattr(req, "supply_voltage_V", None)
+        nb = [m["motor_code"] for m in mot if m.get("brake_option") is False]
+        if nb:
+            mot = [m for m in mot if m.get("brake_option") is not False]
+            assumptions.append("Bacaklar yük taşıdığı için frenli seçeneği olmayan motorlar önerilmedi: " + ", ".join(nb) + ".")
+        sup =getattr(req, "supply_voltage_V", None)
         if sup is not None:
             mot = [m for m in mot if m.get("voltage_V") == sup]
             assumptions.append(f"Servo besleme gerilimi {sup} V olarak sınırlandı.")
@@ -494,15 +506,18 @@ def size_platform(req, catalog=None, servos=None, ref=None):
     Rb_ref, Rt_ref = par["R_base"], par["R_top"]
 
     lo_b, hi_b, lo_t, hi_t = 0.6 * Rb_ref, 2.0 * Rb_ref, 0.6 * Rt_ref, 2.0 * Rt_ref
-    cap_b = req.base_max_diameter_mm / 2 - pm[0] if req.base_max_diameter_mm else None
-    cap_t = req.top_max_diameter_mm / 2 - pm[1] if req.top_max_diameter_mm else None
+    # üretim ölçüleri küsuratsız: yarıçaplar 5 mm adımında, plaka çapı 10 mm'ye yukarı yuvarlanır (plate_dia)
+    snap = lambda v: np.round(np.asarray(v, float) / R_STEP_MM) * R_STEP_MM
+    cap = lambda dmax, m: np.floor((np.floor(dmax / 10.0) * 10.0 / 2 - m) / R_STEP_MM) * R_STEP_MM
+    cap_b = float(cap(req.base_max_diameter_mm, pm[0])) if req.base_max_diameter_mm else None
+    cap_t = float(cap(req.top_max_diameter_mm, pm[1])) if req.top_max_diameter_mm else None
     n_groups = sum(len(g["strokes"]) for g in models)
     nR = int(np.clip(np.sqrt(60_000 / (n_groups * len(poses))), 6, 40))
     step_b = max(5.0, (hi_b - lo_b) / (nR - 1))
     step_t = max(5.0, (hi_t - lo_t) / (nR - 1))
 
     def grid(lo, hi, step, cap):
-        v = np.arange(lo, hi + 1e-9, step)
+        v = np.unique(snap(np.arange(lo, hi + 1e-9, step)))
         if cap is not None:
             v = v[v <= cap + 1e-9]
             if cap > 30 and (len(v) == 0 or v[-1] < cap - 1e-6):
@@ -512,9 +527,9 @@ def size_platform(req, catalog=None, servos=None, ref=None):
     gb, gt = grid(lo_b, hi_b, step_b, cap_b), grid(lo_t, hi_t, step_t, cap_t)
     if req.plate_preference == "reference":   # referans yarıçaplar ızgarada tam bulunsun
         if cap_b is None or Rb_ref <= cap_b + 1e-9:
-            gb = np.unique(np.append(gb, Rb_ref))
+            gb = np.unique(np.append(gb, snap(Rb_ref)))
         if cap_t is None or Rt_ref <= cap_t + 1e-9:
-            gt = np.unique(np.append(gt, Rt_ref))
+            gt = np.unique(np.append(gt, snap(Rt_ref)))
     if len(gb) == 0 or len(gt) == 0:
         return _fail(req, assumptions, unverified, "Plaka çapı sınırı çok küçük: kardan yerleşimi mümkün değil.")
     GB, GT = np.meshgrid(gb, gt, indexing="ij")
@@ -551,8 +566,9 @@ def size_platform(req, catalog=None, servos=None, ref=None):
             records.append(best_inf[(id(lead), gear)])
 
     # -- aşama 2: 5 mm ince ızgara ile yerel iyileştirme
-    ob = np.arange(-step_b, step_b + 1e-9, 5.0)
-    ot = np.arange(-step_t, step_t + 1e-9, 5.0)
+    kb, kt = np.floor(step_b / R_STEP_MM) * R_STEP_MM, np.floor(step_t / R_STEP_MM) * R_STEP_MM
+    ob = np.arange(-kb, kb + 1e-9, R_STEP_MM)   # ızgara 5 mm katı; ofsetler de 5 mm katı
+    ot = np.arange(-kt, kt + 1e-9, R_STEP_MM)
     refined = []
     for rec in records:
         Rb = (rec["Rb"] + ob[:, None] + 0 * ot[None]).ravel()
@@ -812,8 +828,8 @@ def _candidate(rec, rank, req, P):
                   "brake_option": mot.get("brake_option")},
         "geometry": {"R_base_mm": q(rec["Rb"]), "R_top_mm": q(rec["Rt"]), "home_height_mm": q(rec["H"]),
                      "base_joints_mm": np.round(base, 2).tolist(), "top_joints_mm": np.round(top, 2).tolist(),
-                     "base_plate_diameter_mm": q(2 * (rec["Rb"] + pm[0])),
-                     "top_plate_diameter_mm": q(2 * (rec["Rt"] + pm[1]))},
+                     "base_plate_diameter_mm": plate_dia(rec["Rb"], pm[0]),
+                     "top_plate_diameter_mm": plate_dia(rec["Rt"], pm[1])},
         "margins": {k: q(max(v, -999.0)) for k, v in zip(MARGIN_KEYS, rec["M"])},
         "worst_case": {"max_leg_force_N": q(rec["ftot"]), "max_leg_speed_mm_s": q(max(c["max_leg_speed_mm_s"] for c in rec["per_case"])),
                        "leg_length_range_mm": [q(rec["lmin"]), q(rec["lmax"])],
